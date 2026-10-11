@@ -1,14 +1,269 @@
-
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CONNECT - NGO Support</title>
+    <title>Home | CONNECT</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f8f6;
+            color: #263b35;
+        }
+
+        header {
+            background: #176b55;
+            color: white;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        header h2 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 18px;
+            font-weight: bold;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 75px 20px;
+            background: linear-gradient(135deg, #d9f5e8, #effaf4);
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            color: #176b55;
+            margin-bottom: 15px;
+        }
+
+        .hero p {
+            max-width: 700px;
+            margin: 0 auto 28px;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+
+        .button {
+            display: inline-block;
+            background: #176b55;
+            color: white;
+            padding: 13px 22px;
+            margin: 6px;
+            border-radius: 7px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .button:hover {
+            background: #104c3d;
+        }
+
+        .secondary {
+            background: white;
+            color: #176b55;
+            border: 2px solid #176b55;
+        }
+
+        .secondary:hover {
+            background: #e0f3e9;
+            color: #104c3d;
+        }
+
+        .section {
+            padding: 45px 8%;
+            text-align: center;
+        }
+
+        .section h2 {
+            font-size: 30px;
+            margin-bottom: 30px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 22px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.07);
+            text-align: left;
+            border-top: 4px solid #2c9b78;
+        }
+
+        .card h3 {
+            color: #176b55;
+            font-size: 21px;
+        }
+
+        .card p {
+            line-height: 1.7;
+            color: #586760;
+        }
+
+        .card a {
+            color: #176b55;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .card a:hover {
+            text-decoration: underline;
+        }
+
+        .note {
+            background: #fff5d9;
+            color: #70541a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 30px;
+            line-height: 1.6;
+        }
+
+        footer {
+            background: #123f34;
+            color: white;
+            text-align: center;
+            padding: 22px;
+            margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                justify-content: center;
+                text-align: center;
+            }
+
+            nav a {
+                margin: 8px;
+                display: inline-block;
+            }
+
+            .hero h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Welcome to CONNECT</h1>
-    <p>Connecting NGOs, volunteers and communities.</p>
-    <p>This is the CONNECT project website.</p>
+
+    <header>
+        <h2>🌱 CONNECT</h2>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#features">Our Services</a>
+            <a href="#about">About</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <h1>Small actions. Greater impact.</h1>
+
+        <p>
+            CONNECT brings NGOs, volunteers and donors together.
+            Share community needs, redirect surplus food and use
+            data to understand gaps in healthcare access.
+            Together, we can build stronger communities.
+        </p>
+
+        <a class="button" href="#features">Explore CONNECT</a>
+        <a class="button secondary" href="#about">Learn More</a>
+    </section>
+
+    <section class="section" id="features">
+        <h2>What can you do with CONNECT?</h2>
+
+        <div class="grid">
+
+            <div class="card">
+                <h3>🤝 NGO Needs</h3>
+                <p>
+                    Register community requirements and help
+                    organisations identify essential resources.
+                </p>
+                <a href="#about">Explore needs →</a>
+            </div>
+
+            <div class="card">
+                <h3>🍱 Food Sharing</h3>
+                <p>
+                    Help redirect surplus food to community
+                    organisations and people who need it.
+                </p>
+                <a href="#about">Explore food sharing →</a>
+            </div>
+
+            <div class="card">
+                <h3>🏥 Healthcare Map</h3>
+                <p>
+                    Explore healthcare facilities and investigate
+                    possible gaps in healthcare access.
+                </p>
+                <a href="#about">Explore healthcare →</a>
+            </div>
+
+            <div class="card">
+                <h3>📊 Impact Dashboard</h3>
+                <p>
+                    Understand community needs through data,
+                    visualisations and social impact indicators.
+                </p>
+                <a href="#about">Explore impact →</a>
+            </div>
+
+        </div>
+
+        <div class="note">
+            <strong>Project note:</strong>
+            This is the public static version of CONNECT.
+            Data submission, live maps and MySQL-powered dashboards
+            require a separately hosted backend to work dynamically.
+        </div>
+    </section>
+
+    <section class="section" id="about">
+        <h2>About CONNECT</h2>
+
+        <p>
+            CONNECT is a community-impact platform designed to
+            connect NGOs, volunteers and donors while using data
+            to identify needs and support better resource allocation.
+        </p>
+
+        <a class="button"
+           href="https://github.com/preetha1475/CONNECT"
+           target="_blank"
+           rel="noopener noreferrer">
+            View Project on GitHub
+        </a>
+    </section>
+
+    <footer>
+        <p>© 2026 CONNECT | Connecting People. Creating Impact.</p>
+    </footer>
+
 </body>
 </html>
+```
