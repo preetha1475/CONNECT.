@@ -1,0 +1,20 @@
+
+{% extends "base.html" %}
+{% block title %}Contact | CONNECT{% endblock %}
+{% block content %}
+<h1>Contact CONNECT</h1>
+<p>Have a question or want to get involved? Send us a message.</p>
+
+<form method="POST">
+    <label>Your Name</label>
+    <input name="name" required maxlength="150">
+
+    <label>Email Address</label>
+    <input type="email" name="email" required maxlength="200">
+
+    <label>Message</label>
+    <textarea name="message" required></textarea>
+
+    <button type="submit">Send Message</button>
+</form>
+{% endblock %}

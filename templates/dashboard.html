@@ -1,0 +1,26 @@
+
+{% extends "base.html" %}
+{% block title %}Impact Dashboard | CONNECT{% endblock %}
+{% block content %}
+<h1>CONNECT Impact Dashboard</h1>
+<p>These totals are calculated from the current database records.</p>
+
+<div class="grid">
+    <div class="card">
+        <h3>Total NGO Requests</h3>
+        <h1>{{ needs_total }}</h1>
+    </div>
+    <div class="card">
+        <h3>Pending Requests</h3>
+        <h1>{{ pending_total }}</h1>
+    </div>
+    <div class="card">
+        <h3>Food Donations</h3>
+        <h1>{{ food_total }}</h1>
+    </div>
+    <div class="card">
+        <h3>Available Food Listings</h3>
+        <h1>{{ available_food }}</h1>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+
+{% extends "base.html" %}
+{% block title %}Food Sharing | CONNECT{% endblock %}
+{% block content %}
+<h1>Surplus Food Sharing</h1>
+<p>Help connect food donors with organisations that need resources.</p>
+
+<form method="POST">
+    <label>Donor Name</label>
+    <input name="donor_name" required maxlength="150">
+
+    <label>Food Items</label>
+    <input name="food_name" required maxlength="150">
+
+    <label>Quantity</label>
+    <input name="quantity" placeholder="Example: 20 meal boxes" required>
+
+    <label>Pickup Area</label>
+    <input name="area" required maxlength="150">
+
+    <button type="submit">Register Food Donation</button>
+</form>
+
+<h2>Available Food Donations</h2>
+<div class="table-wrap">
+<table>
+    <tr>
+        <th>Donor</th>
+        <th>Food</th>
+        <th>Quantity</th>
+        <th>Area</th>
+        <th>Status</th>
+    </tr>
+    {% for item in records %}
+    <tr>
+        <td>{{ item.donor_name }}</td>
+        <td>{{ item.food_name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.area }}</td>
+        <td>{{ item.status }}</td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5">No food donations have been registered yet.</td></tr>
+    {% endfor %}
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,546 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>CONNECT | Healthcare Access Map</title>
+
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f8f6;
+            color: #24352;
+        }
+
+        
+/* CONNECT navigation bar */
+.main-header {
+    background: #ffffff;
+    color: #24352d;
+    padding: 20px 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 10px #0000000d;
+}
+
+.logo {
+    font-size: 27px;
+    font-weight: bold;
+    color: #176b52;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.logo span {
+    color: #f2a65a;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 15px;
+}
+
+nav a {
+    color: #34483d;
+    text-decoration: none;
+    font-size: 14px;
+    padding: 7px 0;
+    transition: color 0.2s ease;
+}
+
+nav a:hover,
+nav a.active {
+    color: #16835d;
+    font-weight: bold;
+}
+
+/* Healthcare map title section */
+.map-heading {
+    background: #e0f2e7;
+    padding: 25px 5%;
+}
+
+.map-heading h1 {
+    color: #176b52;
+    margin: 0 0 8px;
+    font-size: 28px;
+}
+
+.map-heading p {
+    color: #34483d;
+    margin: 0;
+    line-height: 1.6;
+}
+
+/* Mobile navigation */
+@media (max-width: 700px) {
+    .main-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    nav {
+        gap: 12px;
+    }
+
+    .map-heading h1 {
+        font-size: 24px;
+    }
+}
+
+
+        .page {
+            max-width: 1400px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .controls {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(180px, 1fr));
+            gap: 16px;
+            box-shadow: 0 3px 12px #00000010;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            background: white;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 18px 0;
+        }
+
+        .stat {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px #00000010;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 25px;
+            margin-top: 8px;
+        }
+
+        #map {
+            height: 620px;
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid #d5dce5;
+            background: #e8eef4;
+        }
+
+        .legend {
+            background: white;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 10px;
+            line-height: 2;
+        }
+
+        .dot {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 7px;
+        }
+
+        .note {
+            margin-top: 15px;
+            color: #526176;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 700px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            #map {
+                height: 480px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+
+<header class="main-header">
+    <a href="{{ url_for('home') }}" class="logo">
+        CONNECT<span>.</span>
+    </a>
+
+    <nav>
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('needs_page') }}">NGO Needs</a>
+        <a href="{{ url_for('food') }}">Food Sharing</a>
+        <a href="{{ url_for('map_page') }}" class="active">Healthcare Map</a>
+        <a href="{{ url_for('dashboard') }}">Dashboard</a>
+        <a href="{{ url_for('about') }}">About</a>
+        <a href="{{ url_for('contact') }}">Contact</a>
+    </nav>
+</header>
+
+<div class="map-heading">
+    <h1>Healthcare Access Map</h1>
+    <p>
+        Explore healthcare facilities and identify potential
+        access gaps across Chennai.
+    </p>
+</div>
+
+<div class="page">
+
+    <div class="controls">
+
+        <div>
+            <label for="areaSelect">Select Chennai area</label>
+            <select id="areaSelect">
+                <option value="">All Chennai areas</option>
+                {% for n in neighbourhoods %}
+                <option value="{{ loop.index0 }}">
+                    {{ n.area }}
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div>
+            <label for="radiusSelect">Search radius</label>
+            <select id="radiusSelect">
+                <option value="500">500 metres</option>
+                <option value="1000" selected>1 kilometre</option>
+                <option value="2000">2 kilometres</option>
+                <option value="3000">3 kilometres</option>
+                <option value="5000">5 kilometres</option>
+            </select>
+        </div>
+
+        <div>
+            <label for="typeSelect">Healthcare facility type</label>
+            <select id="typeSelect">
+                <option value="all">All facilities</option>
+                <option value="hospital">Hospitals</option>
+                <option value="clinic">Clinics</option>
+                <option value="doctor">Doctors / medical centres</option>
+                <option value="other">Other facilities</option>
+            </select>
+        </div>
+
+    </div>
+
+    <div class="stats">
+        <div class="stat">
+            Selected area
+            <strong id="areaName">All Chennai</strong>
+        </div>
+
+        <div class="stat">
+            Facilities displayed
+            <strong id="facilityCount">0</strong>
+        </div>
+
+        <div class="stat">
+            Potential gap status
+            <strong id="gapStatus">Calculating...</strong>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <div class="legend">
+        <b>Map legend</b><br>
+        <span class="dot" style="background:#2563eb"></span> Hospitals<br>
+        <span class="dot" style="background:#16a34a"></span> Clinics<br>
+        <span class="dot" style="background:#9333ea"></span> Doctors and medical centres<br>
+        <span class="dot" style="background:#64748b"></span> Other healthcare facilities<br>
+        <span class="dot" style="background:#dc2626"></span> Potential healthcare access gap
+    </div>
+
+    <p class="note">
+        Gap indicators are calculated from the available neighbourhood reference
+        coordinates and mapped facilities within the selected radius. They do not
+        prove that a whole neighbourhood or street lacks healthcare. Incomplete
+        mapping, unlisted facilities and road-network travel distances can affect
+        the results. A straight-line radius is not the same as walking or driving
+        distance.
+    </p>
+
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<script>
+const facilities = {{ facilities | tojson }};
+const neighbourhoods = {{ neighbourhoods | tojson }};
+
+const map = L.map("map").setView([13.0827, 80.2707], 11);
+
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    attribution: "&copy; OpenStreetMap contributors",
+    maxZoom: 19
+}).addTo(map);
+
+const facilityLayer = L.layerGroup().addTo(map);
+const neighbourhoodLayer = L.layerGroup().addTo(map);
+const radiusLayer = L.layerGroup().addTo(map);
+const gapLayer = L.layerGroup().addTo(map);
+
+function distanceMetres(lat1, lon1, lat2, lon2) {
+    const R = 6371000;
+    const rad = value => value * Math.PI / 180;
+
+    const dLat = rad(lat2 - lat1);
+    const dLon = rad(lon2 - lon1);
+
+    const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(rad(lat1)) *
+        Math.cos(rad(lat2)) *
+        Math.sin(dLon / 2) ** 2;
+
+    return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function facilityCategory(facility) {
+    const type = (
+        (facility.facility_type || "") + " " +
+        (facility.facility_name || "")
+    ).toLowerCase();
+
+    if (type.includes("hospital")) return "hospital";
+    if (type.includes("clinic") || type.includes("polyclinic")) return "clinic";
+
+    if (
+        type.includes("doctor") ||
+        type.includes("medical centre") ||
+        type.includes("medical center") ||
+        type.includes("health centre") ||
+        type.includes("health center")
+    ) {
+        return "doctor";
+    }
+
+    return "other";
+}
+
+function markerColour(category) {
+    return {
+        hospital: "#2563eb",
+        clinic: "#16a34a",
+        doctor: "#9333ea",
+        other: "#64748b"
+    }[category] || "#64748b";
+}
+
+function selectedTypeMatches(facility, selectedType) {
+    return selectedType === "all" ||
+           facilityCategory(facility) === selectedType;
+}
+
+function redrawMap() {
+    facilityLayer.clearLayers();
+    neighbourhoodLayer.clearLayers();
+    radiusLayer.clearLayers();
+    gapLayer.clearLayers();
+
+    const areaIndex = document.getElementById("areaSelect").value;
+    const radius = Number(document.getElementById("radiusSelect").value);
+    const selectedType = document.getElementById("typeSelect").value;
+
+    const selectedArea =
+        areaIndex === "" ? null : neighbourhoods[Number(areaIndex)];
+
+    document.getElementById("areaName").textContent =
+        selectedArea ? selectedArea.area : "All Chennai";
+
+    let displayed = 0;
+    let gapCount = 0;
+
+    if (selectedArea) {
+        map.setView(
+            [selectedArea.latitude, selectedArea.longitude],
+            14
+        );
+
+        radiusLayer.addLayer(
+            L.circle(
+                [selectedArea.latitude, selectedArea.longitude],
+                {
+                    radius: radius,
+                    color: "#2563eb",
+                    weight: 2,
+                    fillColor: "#60a5fa",
+                    fillOpacity: 0.10
+                }
+            ).bindTooltip(
+                selectedArea.area + " — " + radius + " m search radius"
+            )
+        );
+    } else {
+        map.setView([13.0827, 80.2707], 11);
+    }
+
+    // Show neighbourhood reference points and potential gaps.
+    const areasToCheck = selectedArea
+        ? [selectedArea]
+        : neighbourhoods;
+
+    areasToCheck.forEach(n => {
+        const nearbyAll = facilities.filter(f =>
+            distanceMetres(
+                n.latitude, n.longitude,
+                f.latitude, f.longitude
+            ) <= radius
+        );
+
+        const nearbyMatching = nearbyAll.filter(f =>
+            selectedTypeMatches(f, selectedType)
+        );
+
+        const hasNearbyFacility = nearbyMatching.length > 0;
+
+        if (!hasNearbyFacility) {
+            gapCount++;
+
+            L.circleMarker(
+                [n.latitude, n.longitude],
+                {
+                    radius: 10,
+                    color: "#b91c1c",
+                    weight: 2,
+                    fillColor: "#ef4444",
+                    fillOpacity: 0.85
+                }
+            ).bindTooltip(
+                "<b>Potential access gap</b><br>" +
+                "Area: " + n.area + "<br>" +
+                "Location: " + (n.location || "Not provided") + "<br>" +
+                "Search radius: " + radius + " metres<br>" +
+                "Matching mapped facilities nearby: 0<br>" +
+                "<small>Reference-point estimate; verify local coverage.</small>"
+            ).addTo(gapLayer);
+        } else {
+            L.circleMarker(
+                [n.latitude, n.longitude],
+                {
+                    radius: 5,
+                    color: "#475569",
+                    fillColor: "#94a3b8",
+                    fillOpacity: 0.75
+                }
+            ).bindTooltip(
+                "<b>" + n.area + "</b><br>" +
+                "Mapped facilities within " + radius + " m: " +
+                nearbyMatching.length
+            ).addTo(neighbourhoodLayer);
+        }
+    });
+
+    // Filter healthcare facilities around the selected area.
+    const visibleFacilities = facilities.filter(f => {
+        if (!selectedTypeMatches(f, selectedType)) return false;
+
+        if (!selectedArea) return true;
+
+        return distanceMetres(
+            selectedArea.latitude,
+            selectedArea.longitude,
+            f.latitude,
+            f.longitude
+        ) <= radius;
+    });
+
+    visibleFacilities.forEach(f => {
+        const category = facilityCategory(f);
+
+        L.circleMarker(
+            [f.latitude, f.longitude],
+            {
+                radius: 7,
+                color: markerColour(category),
+                fillColor: markerColour(category),
+                fillOpacity: 0.9,
+                weight: 2
+            }
+        ).bindTooltip(
+            "<b>" + escapeHtml(f.facility_name) + "</b><br>" +
+            "Type: " + escapeHtml(f.facility_type || "Not recorded") + "<br>" +
+            "Area: " + escapeHtml(f.area || "Not recorded") + "<br>" +
+            "Source: " + escapeHtml(f.source || "Not recorded") + "<br>" +
+            "Coordinates: " +
+            Number(f.latitude).toFixed(5) + ", " +
+            Number(f.longitude).toFixed(5)
+        ).addTo(facilityLayer);
+    });
+
+    displayed = visibleFacilities.length;
+
+    document.getElementById("facilityCount").textContent = displayed;
+
+    document.getElementById("gapStatus").textContent =
+        gapCount === 0 ? "No gaps flagged" : gapCount + " potential gaps";
+
+    // If an area is selected, show only that area and nearby facilities.
+    // Otherwise, show the city-wide picture.
+}
+
+function escapeHtml(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    }[char]));
+}
+
+document.getElementById("areaSelect").addEventListener("change", redrawMap);
+document.getElementById("radiusSelect").addEventListener("change", redrawMap);
+document.getElementById("typeSelect").addEventListener("change", redrawMap);
+
+// Display the map and data as soon as the page opens.
+redrawMap();
+</script>
+
+</body>
+</html>

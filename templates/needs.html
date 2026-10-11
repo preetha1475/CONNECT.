@@ -1,0 +1,144 @@
+
+{% extends "base.html" %}
+{% block title %}NGO Needs | CONNECT{% endblock %}
+
+{% block content %}
+
+<h1>NGO Needs</h1>
+<p>Submit a community requirement. Your request will be stored in MySQL.</p>
+
+<form method="POST">
+
+    <label for="ngo_id">Select NGO</label>
+    <select name="ngo_id" id="ngo_id" required>
+        <option value="">-- Choose an NGO --</option>
+
+        {% for ngo in ngos %}
+        <option value="{{ ngo.id }}"
+            {% if selected_ngo_id|string == ngo.id|string %}selected{% endif %}>
+            {{ ngo.name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <div id="ngo-details" style="display:none; padding:12px; margin:12px 0; background:#f0f7f4; border-radius:8px;">
+        <h3 id="ngo-name"></h3>
+        <p><strong>Registration No:</strong> <span id="ngo-registration"></span></p>
+        <p><strong>District / State:</strong> <span id="ngo-district"></span></p>
+        <p><strong>Address:</strong> <span id="ngo-address"></span></p>
+        <p><strong>Sectors:</strong> <span id="ngo-sectors"></span></p>
+    </div>
+
+    <label for="need_type">Type of Need</label>
+    <select name="need_type" id="need_type" required>
+        <option value="">Choose a category</option>
+        <option>Food</option>
+        <option>Clothes</option>
+        <option>Medical Supplies</option>
+        <option>Volunteers</option>
+        <option>Education</option>
+        <option>Equipment</option>
+        <option>Financial Assistance</option>
+        <option>Drinking Water</option>
+        <option>Other</option>
+    </select>
+
+    <label for="description">Description</label>
+    <textarea name="description" id="description"
+              required maxlength="2000"
+              placeholder="Describe the community's requirement..."></textarea>
+
+    <label for="area">Area</label>
+    <input name="area" id="area" required maxlength="150"
+           placeholder="e.g. Adambakkam, Chennai">
+
+    <label for="urgency">Urgency</label>
+    <select name="urgency" id="urgency" required>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+        <option value="High">High</option>
+        <option value="Critical">Critical</option>
+    </select>
+
+    <button type="submit">Save NGO Need</button>
+
+</form>
+
+<hr>
+
+<h2>Submitted Requests</h2>
+
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>NGO</th>
+                <th>Need</th>
+                <th>Description</th>
+                <th>Area</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in records %}
+            <tr>
+                <td>{{ item.ngo_name }}</td>
+                <td>{{ item.need_type }}</td>
+                <td>{{ item.description }}</td>
+                <td>{{ item.area }}</td>
+                <td>{{ item.status }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="5">No requests have been submitted yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    // NGO details supplied by Flask from MySQL
+    const ngoData = {{ ngos | tojson }};
+
+    const ngoSelect = document.getElementById("ngo_id");
+    const details = document.getElementById("ngo-details");
+
+    function showNgoDetails() {
+        const selectedId = ngoSelect.value;
+
+        const ngo = ngoData.find(
+            item => String(item.id) === String(selectedId)
+        );
+
+        if (!ngo) {
+            details.style.display = "none";
+            return;
+        }
+
+        document.getElementById("ngo-name").textContent =
+            ngo.name || "Not provided";
+
+        document.getElementById("ngo-registration").textContent =
+            ngo.registration_no || "Not provided";
+
+        document.getElementById("ngo-district").textContent =
+            ngo.district_state || "Not provided";
+
+        document.getElementById("ngo-address").textContent =
+            ngo.address || "Not provided";
+
+        document.getElementById("ngo-sectors").textContent =
+            ngo.sectors || "Not provided";
+
+        details.style.display = "block";
+    }
+
+    ngoSelect.addEventListener("change", showNgoDetails);
+
+    // Display details if an NGO is already selected
+    showNgoDetails();
+</script>
+
+{% endblock %}

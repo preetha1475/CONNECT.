@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CONNECT Intro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style1.css') }}">
+</head>
+<body>
+
+    <!-- Intro Animation Section -->
+    <section class="intro" id="intro">
+        <div class="hands-container">
+            <!-- Left Hand -->
+            <img src="{{ url_for('static', filename='images/left.png') }}"
+               class="hand-img hand-left" alt="Left Hand">
+
+            
+            <!-- Touch Spark / Glow Effect -->
+           <div class="spark"></div>
+            
+            <!-- Right Hand -->
+            <img src="{{ url_for('static', filename='images/right.png') }}"
+                  class="hand-img hand-right" alt="Right Hand">
+        </div>
+
+        <div class="brand">
+            <h1>CONNECT<span>.</span></h1>
+            <p>Connecting people. Creating impact.</p>
+        </div>
+
+        <p class="tagline">Together, we can make a difference.</p>
+    </section>
+
+    <!-- Main Dashboard Section -->
+    <section class="project" id="project">
+        <p class="eyebrow">WELCOME TO</p>
+        <h1>CONNECT<span>.</span></h1>
+        <h2>Small actions. Greater impact.</h2>
+
+        <p>
+            Bringing NGOs, volunteers and donors together
+            to build stronger communities.
+        </p>
+
+        <div class="cards">
+            <div class="card">🤝<h3>NGO Needs</h3></div>
+            <div class="card">🍲<h3>Food Sharing</h3></div>
+            <div class="card">🏥<h3>Healthcare Map</h3></div>
+            <div class="card">📊<h3>Impact Dashboard</h3></div>
+        </div>
+
+        <button onclick="replayIntro()">Replay Intro ↻</button>
+    </section>
+
+   
+
+<
+<script>
+    function replayIntro() {
+        window.location.href = "{{ url_for('intro_page') }}";
+    }
+
+    window.addEventListener("load", function () {
+        setTimeout(function () {
+            window.location.href = "{{ url_for('home') }}";
+        }, 4200);
+    });
+</script>
+
+
+</body>
+</html>
