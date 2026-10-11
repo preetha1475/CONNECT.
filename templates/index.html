@@ -1,0 +1,39 @@
+
+{% extends "base.html" %}
+{% block title %}Home | CONNECT{% endblock %}
+{% block content %}
+<section class="hero">
+    <h1>Small actions. Greater impact.</h1>
+    <p>
+        CONNECT brings NGOs, volunteers and donors together.
+        Share community needs, redirect surplus food and use
+        data to understand gaps in healthcare access.
+    </p>
+    <a class="button" href="{{ url_for('needs_page') }}">Submit an NGO Need</a>
+    <a class="button" href="{{ url_for('map_page') }}">Explore the Map</a>
+</section>
+
+<h2>What can you do with CONNECT?</h2>
+<div class="grid">
+    <div class="card">
+        <h3>NGO Needs</h3>
+        <p>Register community requirements and view submitted requests.</p>
+        <a href="{{ url_for('needs_page') }}">Explore needs →</a>
+    </div>
+    <div class="card">
+        <h3>Food Sharing</h3>
+        <p>List surplus food so community organisations can find it.</p>
+        <a href="{{ url_for('food') }}">Explore food →</a>
+    </div>
+    <div class="card">
+        <h3>Healthcare Map</h3>
+        <p>Explore facility locations and investigate possible coverage gaps.</p>
+        <a href="{{ url_for('map_page') }}">Explore map →</a>
+    </div>
+    <div class="card">
+        <h3>Impact Dashboard</h3>
+        <p>See totals calculated from records stored in MySQL.</p>
+        <a href="{{ url_for('dashboard') }}">View dashboard →</a>
+    </div>
+</div>
+{% endblock %}
